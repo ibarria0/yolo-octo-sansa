@@ -1,0 +1,80 @@
+---
+title       : Panama's Goverment Payroll Distribution
+subtitle    : 
+author      : Ivan Barria
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Panama's Goverment Payroll Distribution
+
+Since forever, governmental entities have been plagued by inneptitude and mediocrity.
+My theory is that this is due to the fact that the government underpays mosts of their employees and thus can only hire incompetent people.
+
+--- .class #id 
+
+## Getting the Data
+
+I had to write a scaper using python3.
+https://github.com/LaPrensa/defensoria-planilla
+
+It uses asyncio :)
+
+---
+
+## Processing the Data
+
+The data was exported to CSV using the \copy command from postgresql.
+
+
+```r
+df <- read.csv('planilla.csv')
+df$institucion <- as.factor(df$institucion)
+df$salario <- as.numeric(gsub(',','',df$salario))
+```
+
+---
+
+## General Overview
+
+
+```r
+library(ggplot2)
+qplot(df$salario)
+```
+
+```
+## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
+```
+
+![plot of chunk unnamed-chunk-2](assets/fig/unnamed-chunk-2.png) 
+
+---
+
+## Bad Distribution
+
+Notice the large spread.
+
+
+```r
+summary(df$salario)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0     500     710     920     981   40900
+```
+
+As expected, there are alot of low paying jobs.
+
+---
+
+## Breakdown by Government Entity
+
+If you would like a breakdown by government entity then visit my shinyapp
+http://ibarria.shinyapps.io/defensoria/
